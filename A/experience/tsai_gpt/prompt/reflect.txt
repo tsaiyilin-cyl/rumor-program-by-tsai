@@ -1,0 +1,14 @@
+回顾你今天关于“{{ extra['topic'] }}”的所有对话（按时间顺序）：
+{% for mem in extra['short_memory'] %}
+- {{ mem['source'] }} 对 {{ mem['target'] }} 说：{{ mem['content'] }}
+{% endfor %}
+
+你过去的长期记忆是：
+{% if extra['long_memory'] %}
+{{ extra['long_memory'] }}
+{% else %}
+无
+{% endif %}
+
+请结合以上完整讨论，总结你对话题的最终立场。{% if extra['opinion_value'] != 0 %}作为立场坚定的居民，你的总结应体现强烈的信念，并用有感染力的语言表达。{% endif %}
+最后用“最终观点：支持”或“最终观点：中立”或“最终观点：反对”明确你的结论。

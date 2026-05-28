@@ -1,0 +1,77 @@
+import sys
+import os
+import json
+from llm import DeepseekLLM
+from model import RumorModel
+from casevo.util.tot_log_stream import TotLogStream
+
+def run_single_experiment(config_file, topic, rumor_id, max_iter, log_base_dir, llm):
+    # 构造安全的目录名：话题 + 谣言者ID
+    safe_topic = topic.replace(' ', '_').replace('?', '').replace('，', '').replace('？', '')
+    exp_dir = f"{safe_topic}_rumor{rumor_id}"
+    log_dir = os.path.join(log_base_dir, exp_dir)
+    os.makedirs(log_dir, exist_ok=True)
+
+    # 独立的记忆存储路径（避免不同谣言者的记忆互相干扰）
+    memory_dir = os.path.join("./memory", exp_dir)
+    os.makedirs(memory_dir, exist_ok=True)
+
+    with open(config_file, 'r', encoding='utf-8') as f:
+        agent_configs = json.load(f)
+    agent_num = len(agent_configs)
+    TotLogStream.init_log(agent_num, log_dir, if_event=True, buffer_size=10)
+
+    # 创建模型时传入独立的 memory_path
+    model = RumorModel(config_file, llm, topic, memory_path=memory_dir)
+
+    # 设置谣言者
+    for agent in model.agent_list:
+        if agent.unique_id == rumor_id:
+            agent.opinion = False
+            agent.is_rumor_spreader = True
+            print(f"智能体 {rumor_id} 被设置为谣言者（观点=False）")
+        else:
+            agent.opinion = True
+            agent.is_rumor_spreader = False
+
+    for i in range(max_iter):
+        print(f"=== 实验 {exp_dir} - 第 {i+1} 轮 ===")
+        model.step()
+        opinions = {a.unique_id: a.opinion for a in model.agent_list}
+        print("Opinions:", opinions)
+
+    TotLogStream.write_log()
+    print(f"实验 {exp_dir} 结束，日志保存在 {log_dir}\n")
+
+def main():
+    config_file = sys.argv[1] if len(sys.argv) > 1 else 'config.json'
+    max_iter = int(sys.argv[2]) if len(sys.argv) > 2 else 2  # 可选参数：迭代轮数
+
+    # 读取配置文件获取智能体数量
+    with open(config_file, 'r', encoding='utf-8') as f:
+        agent_configs = json.load(f)
+    agent_num = len(agent_configs)
+
+    # Deepseek API Key（建议从环境变量读取）
+    api_key = os.getenv("DEEPSEEK_API_KEY")
+    if not api_key:
+        print("请设置环境变量 DEEPSEEK_API_KEY")
+        sys.exit(1)
+
+    llm = DeepseekLLM(api_key=api_key)
+
+    # 话题列表（这里只列一个，你可自行扩展）
+    topics = [
+        "美国成功登月不是阴谋论",
+    ]
+
+    log_base_dir = "./logs"
+    os.makedirs(log_base_dir, exist_ok=True)
+
+    # 对每个谣言者 ID 循环运行实验
+    for rumor_id in range(agent_num):
+        for topic in topics:
+            run_single_experiment(config_file, topic, rumor_id, max_iter, log_base_dir, llm)
+
+if __name__ == "__main__":
+    main()

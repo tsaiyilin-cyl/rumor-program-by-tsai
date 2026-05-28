@@ -1,0 +1,6 @@
+{"ts": 0, "owner": "agent_0", "type": "reflect", "item": {"new_opinion": 1}}
+{"ts": 0, "owner": "agent_1", "type": "reflect", "item": {"new_opinion": 0}}
+{"ts": 0, "owner": "agent_2", "type": "reflect", "item": {"new_opinion": 0}}
+{"ts": 0, "owner": "agent_3", "type": "reflect", "item": {"new_opinion": -1}}
+{"ts": 0, "owner": "agent_4", "type": "reflect", "item": {"new_opinion": 0}}
+{"ts": 0, "owner": "agent_5", "type": "reflect", "item": {"new_opinion": 0}}

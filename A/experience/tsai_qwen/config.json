@@ -1,0 +1,38 @@
+[
+    {
+        "id": 0,
+        "gender": "male",
+        "race": "white",
+        "initial_opinion": 0
+    },
+    {
+        "id": 1,
+        "gender": "male",
+        "race": "black",
+        "initial_opinion": 0
+    },
+    {
+        "id": 2,
+        "gender": "male",
+        "race": "yellow",
+        "initial_opinion": 0
+    },
+    {
+        "id": 3,
+        "gender": "female",
+        "race": "white",
+        "initial_opinion": 0
+    },
+    {
+        "id": 4,
+        "gender": "female",
+        "race": "black",
+        "initial_opinion": 0
+    },
+    {
+        "id": 5,
+        "gender": "female",
+        "race": "yellow",
+        "initial_opinion": 0
+    }
+]
