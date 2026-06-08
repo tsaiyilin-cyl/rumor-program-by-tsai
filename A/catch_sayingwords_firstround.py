@@ -124,8 +124,8 @@ def extract_round1_talk(events, experiment_id, is_baseline, model_name):
     return result
 
 def main():
-    target_topic = "topic2"
-    model_configs = [("data_Qwen3.5-35B-A3B", "Qwen3.5-35B-A3B")]
+    target_topic = "topic3"
+    model_configs = [("data_Qwen3.5-Flash", "Qwen3.5-Flash")]
 
     all_data = []
     for data_dir, model_name in model_configs:
@@ -145,7 +145,7 @@ def main():
     df = pd.DataFrame(all_data)
     df = df.sort_values(['experiment_id', 'current_agent'])
 
-    output_path = Path(__file__).parent / "extracted_speeches.xlsx"
+    output_path = Path(__file__).parent / "speeches_Qwen3.5-Flash-WIFI.xlsx"
     df.to_excel(output_path, index=False)
     print(f"提取完成，共 {len(df)} 条记录，已保存至 {output_path}")
 
